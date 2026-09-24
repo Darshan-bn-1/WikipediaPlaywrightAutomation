@@ -1,57 +1,30 @@
 pipeline {
     agent any
 
-    stages {
+    parameters {
+        choice(
+            name: 'BROWSER',
+            choices: ['chromium', 'firefox', 'webkit'],
+            description: 'Select browser'
+        )
 
-        stage('Install Dependencies') {
-            steps {
-                bat 'npm install'
-            }
-        }
-
-        stage('Install Chromium Browser') {
-            steps {
-                bat 'npx playwright install chromium'
-            }
-        }
-
-        stage('Run Playwright Tests') {
-            steps {
-                bat 'npx playwright test'
-            }
-        }
+        string(
+            name: 'BASE_URL',
+            defaultValue: 'https://en.wikipedia.org',
+            description: 'Application URL'
+        )
     }
 
-    post {
-        always {
+    stages {
 
-            // Publish Playwright HTML Report
-            publishHTML([
-                allowMissing: true,
-                alwaysLinkToLastBuild: true,
-                keepAll: true,
-                reportDir: 'playwright-report',
-                reportFiles: 'index.html',
-                reportName: 'Playwright HTML Report'
-            ])
-
-            // Archive full Playwright report folder
-            archiveArtifacts(
-                artifacts: 'playwright-report/**/*',
-                fingerprint: true
-            )
-
-            // Archive execution logs
-            archiveArtifacts(
-                artifacts: 'logs/**/*.log',
-                fingerprint: true
-            )
-
-            // Archive screenshots
-            archiveArtifacts(
-                artifacts: 'screenshots/**/*',
-                fingerprint: true
-            )
+        stage('Run Tests') {
+            steps {
+                bat """
+                set BROWSER=%BROWSER%
+                set BASE_URL=%BASE_URL%
+                npx playwright test
+                """
+            }
         }
     }
 }

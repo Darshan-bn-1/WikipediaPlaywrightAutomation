@@ -9,13 +9,13 @@ pipeline {
             }
         }
 
-        stage('Install Browsers') {
+        stage('Install Chromium Browser') {
             steps {
                 bat 'npx playwright install chromium'
             }
         }
 
-        stage('Run Tests') {
+        stage('Run Playwright Tests') {
             steps {
                 bat 'npx playwright test'
             }
@@ -27,7 +27,7 @@ pipeline {
 
             // Publish Playwright HTML Report
             publishHTML([
-                allowMissing: false,
+                allowMissing: true,
                 alwaysLinkToLastBuild: true,
                 keepAll: true,
                 reportDir: 'playwright-report',
@@ -35,13 +35,19 @@ pipeline {
                 reportName: 'Playwright HTML Report'
             ])
 
-            // Archive Logs
+            // Archive full Playwright report folder
+            archiveArtifacts(
+                artifacts: 'playwright-report/**/*',
+                fingerprint: true
+            )
+
+            // Archive execution logs
             archiveArtifacts(
                 artifacts: 'logs/**/*.log',
                 fingerprint: true
             )
 
-            // Archive Screenshots
+            // Archive screenshots
             archiveArtifacts(
                 artifacts: 'screenshots/**/*',
                 fingerprint: true

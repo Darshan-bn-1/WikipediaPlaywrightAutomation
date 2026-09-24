@@ -25,6 +25,7 @@ pipeline {
     post {
         always {
 
+            // Publish Playwright HTML Report
             publishHTML([
                 allowMissing: false,
                 alwaysLinkToLastBuild: true,
@@ -33,6 +34,18 @@ pipeline {
                 reportFiles: 'index.html',
                 reportName: 'Playwright HTML Report'
             ])
+
+            // Archive Logs
+            archiveArtifacts(
+                artifacts: 'logs/**/*.log',
+                fingerprint: true
+            )
+
+            // Archive Screenshots
+            archiveArtifacts(
+                artifacts: 'screenshots/**/*',
+                fingerprint: true
+            )
         }
     }
 }

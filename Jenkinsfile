@@ -11,7 +11,7 @@ pipeline {
 
         stage('Install Browsers') {
             steps {
-                bat 'npx playwright install'
+                bat 'npx playwright install chromium'
             }
         }
 

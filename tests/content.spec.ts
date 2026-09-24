@@ -31,3 +31,5 @@ test('Verify Categories Section Exists', async ({ page }) => {
     await expect(page.locator('#mw-normal-catlinks')).toBeVisible();
 
 });
+
+//content

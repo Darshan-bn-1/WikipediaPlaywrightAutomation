@@ -9,3 +9,5 @@ test('Verify Wikipedia Home Page', async ({ page }) => {
     await expect(page).toHaveTitle(/Wikipedia/);
 
 });
+
+//Demo
